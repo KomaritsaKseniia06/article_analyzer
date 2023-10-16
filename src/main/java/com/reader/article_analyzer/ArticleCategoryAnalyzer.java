@@ -1,9 +1,9 @@
 package com.reader.article_analyzer;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class ArticleCategoryAnalyzer {
@@ -15,39 +15,33 @@ public class ArticleCategoryAnalyzer {
 
     public Set<String> analyzeContent(String content) {
         String[] wordsArray = content.split(" ");
-        HashSet<String> categories = new HashSet<>();
-        int maxCount = 0;
+        Map<String, Integer> wordCounts = new HashMap<>();
 
-        for (int i = 0; i < wordsArray.length; i++) {
-            int count = 0;
-            boolean skipWord = false;
 
-            for (String excludedWord : excludedWordsArray) {
-                if (wordsArray[i].equalsIgnoreCase(excludedWord)) {
-                    skipWord = true;
-                    break;
-                }
+        for (String word : wordsArray) {
+            word = word.toLowerCase();
+            if (!isExcludedWord(word)) {
+                wordCounts.put(word, wordCounts.getOrDefault(word, 0) + 1);
             }
+        }
 
-            if (skipWord) {
-                continue;
-            }
 
-            for (int j = i + 1; j < wordsArray.length; j++) {
-                if (wordsArray[j].equalsIgnoreCase(wordsArray[i])) {
-                    count++;
-                }
-            }
-
-            if (count > maxCount) {
-                maxCount = count;
-                categories.clear();
-                categories.add(wordsArray[i]);
-            } else if (count == maxCount) {
-                categories.add(wordsArray[i]);
+        Set<String> categories = new HashSet<>();
+        for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
+            if (entry.getValue() >= 2) {
+                categories.add(entry.getKey());
             }
         }
 
         return categories;
+    }
+
+    private boolean isExcludedWord(String word) {
+        for (String excludedWord : excludedWordsArray) {
+            if (excludedWord.equalsIgnoreCase(word)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
