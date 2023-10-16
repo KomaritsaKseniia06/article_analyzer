@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Features and benefits of WebSocket",
+    "content": "What can WebSocket do for you?\n\nWith WebSocket you have a single, long TCP socket connect that helps you connect the server and client. You will find it easier to distribute full duplex, bi-directional messages in real time. You have a minimal overhead and the connection has no latency, which is very helpful.\n\nYou want to use WebSocket because it maintains a continual connection between the server and client. Even if the client is not requesting data, this will still be sent. On top of that, you have constant full duplex communication that can be sent either way, which really helps more than you might imagine. HTTP is not great because it usually comes with a challenge-response principle. By removing that and offering real time results and support, WebSocket has the potential to make a huge difference and this, in turn, will help everyone. Plus, the server pushes data fast and you can easily convert a regular HTTP connection into a WebSocket one. WebSocket is cool, Websocket should be the category"
+  },
+  {
+    "id": 2,
+    "name": "Top 10 benefits of microservices",
+    "content": "Microservices are the ultimate way to break up your application into smaller, more logically themed pieces. \n\n\nA microservices' architecture is one type of distributed system because it separates the application into separate components and services in one environment.\n\nAlthough microservices are commonly referred to as an architectural solutions for developing complex web-based applications, they are an extension of an existing framework or service. They have gained widespread recognition due to the evolution of a more open-standards approach known as SOA. \n\nIn this article, we'll talk about the various advantages and disadvantages of microservices."
+  },
+  {
+    "id": 3,
+    "name": "Spring Framework",
+    "content": "Spring framework helps develop various types of applications using the Java platforms. It provides an extensive level of infrastructure support. Spring also provides the “Plain Old Java Objects” (POJOs) mechanisms using which developers can easily create the Java SE programming model with the full and partial JAVA EE(Enterprise Edition).\n\nSpring strives to facilitate the complex and unmanageable enterprise Java application development revolution by offering a framework that incorporates technologies. Spring and Spring"
+  }
+]
