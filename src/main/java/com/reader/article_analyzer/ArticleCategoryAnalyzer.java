@@ -1,8 +1,14 @@
 package com.reader.article_analyzer;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 @Component
@@ -13,7 +19,7 @@ public class ArticleCategoryAnalyzer {
         this.excludedWordsArray = excludedWords.split(", ");
     }
 
-    public Set<String> analyzeContent(String content) {
+    public Set<String> analyzeContent(String content) throws IOException {
         String[] wordsArray = content.split(" ");
         Map<String, Integer> wordCounts = new HashMap<>();
 
@@ -30,9 +36,19 @@ public class ArticleCategoryAnalyzer {
         for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
             if (entry.getValue() >= 2) {
                 categories.add(entry.getKey());
-            }
-        }
 
+                //saving set of unique categories into categories.json file
+
+                Gson gson = new Gson();
+                String gsonString = gson.toJson(categories);
+                try (FileWriter fileWriter = new FileWriter("categories.json")) {
+                    fileWriter.write(gsonString);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
         return categories;
     }
 
