@@ -1,11 +1,8 @@
 package com.reader.article_analyzer;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -20,7 +17,8 @@ public class ArticleCategoryAnalyzer {
     }
 
     public Set<String> analyzeContent(String content) throws IOException {
-        String[] wordsArray = content.split(" ");
+        String result = content.replaceAll("[^\\sa-zA-Z0-9]", "");
+        String[] wordsArray = result.split(" ");
         Map<String, Integer> wordCounts = new HashMap<>();
 
 
@@ -32,20 +30,20 @@ public class ArticleCategoryAnalyzer {
         }
 
 
+        // Find the maximum frequency
+        int maxCount = 0;
+        for(int count : wordCounts.values()){
+            if(count>maxCount){
+                maxCount = count;
+            }
+        }
+
+
+
         Set<String> categories = new HashSet<>();
         for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
-            if (entry.getValue() >= 2) {
+            if (entry.getValue() == maxCount || entry.getValue() == maxCount-1) {
                 categories.add(entry.getKey());
-
-                //saving set of unique categories into categories.json file
-
-                Gson gson = new Gson();
-                String gsonString = gson.toJson(categories);
-                try (FileWriter fileWriter = new FileWriter("categories.json")) {
-                    fileWriter.write(gsonString);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
 
         }
