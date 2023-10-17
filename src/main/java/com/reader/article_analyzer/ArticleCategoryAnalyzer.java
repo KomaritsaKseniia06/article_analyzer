@@ -1,22 +1,23 @@
 package com.reader.article_analyzer;
-
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 @Component
 public class ArticleCategoryAnalyzer {
+    private final JsonFileService fileService;
     private final String[] excludedWordsArray;
+    private final List<Set<String>> allCategories;
 
-    public ArticleCategoryAnalyzer(@Value("${excluded.words}") String excludedWords) {
+    public ArticleCategoryAnalyzer(@Value("${excluded.words}") String excludedWords, JsonFileService fileService) {
         this.excludedWordsArray = excludedWords.split(", ");
+        this.fileService = fileService;
+        this.allCategories = new ArrayList<>(); // Ініціалізуємо список категорій
     }
 
-    public Set<String> analyzeContent(String content) throws IOException {
+    public Set<String> analyzeArticleContent(String filePath, int articleId) throws IOException {
+        String content = fileService.readJsonFile(filePath, Article.class).get(articleId).getContent();
         String result = content.replaceAll("[^\\sa-zA-Z0-9]", "");
         String[] wordsArray = result.split(" ");
         Map<String, Integer> wordCounts = new HashMap<>();
@@ -32,21 +33,20 @@ public class ArticleCategoryAnalyzer {
 
         // Find the maximum frequency
         int maxCount = 0;
-        for(int count : wordCounts.values()){
-            if(count>maxCount){
+        for (int count : wordCounts.values()) {
+            if (count > maxCount) {
                 maxCount = count;
             }
         }
 
 
-
         Set<String> categories = new HashSet<>();
         for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
-            if (entry.getValue() == maxCount || entry.getValue() == maxCount-1) {
+            if (entry.getValue() == maxCount || entry.getValue() == maxCount - 1) {
                 categories.add(entry.getKey());
             }
-
         }
+        allCategories.add(categories);
         return categories;
     }
 
@@ -58,4 +58,9 @@ public class ArticleCategoryAnalyzer {
         }
         return false;
     }
+
+    public List<Set<String>> getAllCategories() {
+        return allCategories;
+    }
+
 }
