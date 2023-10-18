@@ -3,6 +3,9 @@ package com.reader.article_analyzer.Model;
 public class User {
     private Long id;
     private String username;
+    private String email;
+    private String slackId;
+    private NotificationType notificationType;
 
     public Long getId() {
         return id;
@@ -36,9 +39,7 @@ public class User {
         this.slackId = slackId;
     }
 
-    private String email;
-    private String slackId;
-    private NotificationType notificationType;
+
 
     public User(Long id, String username, String email, String slackId, NotificationType notificationType) {
         this.id = id;
@@ -47,8 +48,6 @@ public class User {
         this.slackId = slackId;
         this.notificationType = notificationType;
     }
-
-    // Getters and setters for other fields
 
     public NotificationType getNotificationType() {
         return notificationType;

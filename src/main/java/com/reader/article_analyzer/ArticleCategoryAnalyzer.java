@@ -13,43 +13,51 @@ public class ArticleCategoryAnalyzer {
     private final String[] excludedWordsArray;
     private final List<Set<String>> allCategories;
 
+    //retrieve categories in class ArticleCategorySaver
+    public final List<Set<String>> getAllCategories() {
+        return allCategories;
+    }
+
     public ArticleCategoryAnalyzer(@Value("${excluded.words}") String excludedWords, JsonFileService fileService) {
         this.excludedWordsArray = excludedWords.split(", ");
         this.fileService = fileService;
-        this.allCategories = new ArrayList<>(); // Ініціалізуємо список категорій
+        this.allCategories = new ArrayList<>();
     }
 
-    public void analyzeArticleContent(String filePath, int articleId) throws IOException {
-        String content = fileService.readJsonFile(filePath, Article.class).get(articleId).getContent();
-        String result = content.replaceAll("[^\\sa-zA-Z0-9]", "");
-        String[] wordsArray = result.split(" ");
-        Map<String, Integer> wordCounts = new HashMap<>();
+    public List<Set<String>> analyzeArticleContent(String filePath) throws IOException {
+        List<Article> articles = fileService.readJsonFile(filePath, Article.class).stream().toList();
+        String result;
+        for (Article article : articles) {
+            String content = article.getContent();
+            result = content.replaceAll("[^\\sa-zA-Z0-9]", "");
+            String[] wordsArray = result.split(" ");
+            Map<String, Integer> wordCounts = new HashMap<>();
 
 
-        for (String word : wordsArray) {
-            word = word.toLowerCase();
-            if (!isExcludedWord(word)) {
-                wordCounts.put(word, wordCounts.getOrDefault(word, 0) + 1);
+            for (String word : wordsArray) {
+                word = word.toLowerCase();
+                if (!isExcludedWord(word)) {
+                    wordCounts.put(word, wordCounts.getOrDefault(word, 0) + 1);
+                }
             }
-        }
 
-
-        // Find the maximum frequency
-        int maxCount = 0;
-        for (int count : wordCounts.values()) {
-            if (count > maxCount) {
-                maxCount = count;
+            // Find the maximum frequency
+            int maxCount = 0;
+            for (int count : wordCounts.values()) {
+                if (count > maxCount) {
+                    maxCount = count;
+                }
             }
-        }
 
-
-        Set<String> categories = new HashSet<>();
-        for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
-            if (entry.getValue() == maxCount || entry.getValue() == maxCount - 1) {
-                categories.add(entry.getKey());
+            Set<String> categories = new HashSet<>();
+            for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
+                if (entry.getValue() == maxCount || entry.getValue() == maxCount - 1) {
+                    categories.add(entry.getKey());
+                }
             }
+            allCategories.add(categories);
         }
-        allCategories.add(categories);
+        return allCategories;
     }
 
     private boolean isExcludedWord(String word) {
@@ -60,9 +68,5 @@ public class ArticleCategoryAnalyzer {
         }
         return false;
     }
-
-    public List<Set<String>> getAllCategories() {
-        return allCategories;
-    }
-
 }
+
