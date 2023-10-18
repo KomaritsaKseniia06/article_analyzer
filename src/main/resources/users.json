@@ -1,14 +1,14 @@
 [
   {
     "id": 1,
-    "username": "user_one",
+    "username": "Bob",
     "email": "user.one@mail.com",
     "slackId": "sometestid1",
     "notificationType": "EMAIL"
   },
   {
     "id": 2,
-    "username": "user_two",
+    "username": "Marry",
     "email": "user.two@mail.com",
     "slackId": "sometestid2",
     "notificationType": "SLACK"

@@ -1,4 +1,4 @@
-package com.reader.article_analyzer;
+package com.reader.article_analyzer.Model;
 
 public class Article {
 
